@@ -1,0 +1,1 @@
+web: gunicorn COOL_COUNTERS.wsgi --log-file

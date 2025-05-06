@@ -1,0 +1,143 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site De Recoltes des Données PowerTrain</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-image: url("{% static 'images/rg.PNG' %}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+
+        .container {
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.352); /* Fond semi-transparent pour améliorer la lisibilité */
+            margin: 20px;
+        }
+
+        h1, h2 {
+        color: #007bff; /* Bleu primaire */
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Styles pour les différentes colonnes */
+        .column-i {
+            background-color: #ffe0e0; /* Rouge clair */
+        }
+
+        .column-p {
+            background-color: #e0ffe0; /* Vert clair */
+        }
+
+        .column-q {
+            background-color: #e0e0ff; /* Bleu clair */
+        }
+
+        .column-r {
+            background-color: #ffffe0; /* Jaune clair */
+        }
+
+        /* Styles pour les boutons de téléchargement */
+        .download-buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .download-buttons form {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .download-buttons button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .download-buttons button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Site De Recoltes des Données PowerTrain</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Rechercher</button>
+        </form>
+
+        <h2>Les 10 premières lignes du fichier powertrain de la recherche</h2>
+        <table>
+            <thead>
+                <tr>
+                    {% for column in df.columns %}
+                        <th class="column-{{ column|lower }}">{{ column }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for index, row in df.iterrows %}
+                    <tr>
+                        {% for column, value in row.items %}
+                            <td class="column-{{ column|lower }}">{{ value }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Div pour aligner les boutons -->
+        <div class="download-buttons">
+            <form method="post" action="{% url 'download_csv' %}">
+                {% csrf_token %}
+                <button type="submit">Download CSV</button>
+            </form>
+            <form method="post" action="{% url 'download_excel' %}">
+                {% csrf_token %}
+                <button type="submit">Download Excel</button>
+            </form>
+            <form method="post" action="{% url 'download_pdf' %}">
+                {% csrf_token %}
+                <button type="submit">Download PDF</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
+
